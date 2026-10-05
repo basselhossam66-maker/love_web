@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قصتنا 💕 | Our Story</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(10px); }
+      40%, 80% { transform: translateX(-10px); }
+    }
+    .animate-shake { animation: shake 0.4s ease-in-out; }
+    .draggable { touch-action: none; cursor: grab; }
+    .draggable:active { cursor: grabbing; }
+  </style>
+</head>
+<body class="bg-rose-50 font-sans text-gray-800 min-h-screen flex flex-col">
+
+  <!-- ================= شاشة القفل / PASSCODE LOCK SCREEN ================= -->
+  <section id="view-lock" class="flex flex-col items-center justify-center min-h-screen px-4">
+    <div id="lock-card" class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center border border-rose-100">
+      <div class="text-4xl mb-4">🔒</div>
+      <h1 class="text-2xl font-bold text-rose-600 mb-2">أدخل رمز المرور</h1>
+      <p class="text-sm text-gray-500 mb-6">أدخل الرمز الخاص للدخول إلى الصفحة.</p>
+      
+      <input type="password" id="pin-input" maxlength="4" placeholder="••••" 
+        class="w-full text-center text-3xl tracking-widest py-3 border-2 border-rose-200 rounded-xl focus:outline-none focus:border-rose-400 mb-4">
+      
+      <button onclick="handleLogin()" 
+        class="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold py-3 rounded-xl transition shadow-md">
+        دخول
+      </button>
+      <p id="lock-error" class="text-rose-500 text-sm mt-3 hidden">رمز المرور غير صحيح. حاول مجدداً!</p>
+    </div>
+  </section>
+
+  <!-- ================= المحتوى الرئيسي / MAIN APP CONTAINER ================= -->
+  <div id="app-container" class="hidden flex-col min-h-screen">
+    
+    <!-- شريط التنقل / Navigation Bar -->
+    <nav class="bg-white border-b border-rose-100 shadow-sm sticky top-0 z-50">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+        <span class="font-bold text-rose-600 text-lg">قصتنا 💕</span>
+        <div class="flex space-x-4 space-x-reverse text-sm font-medium">
+          <button onclick="navigate('view-home')" class="hover:text-rose-600">الرئيسية</button>
+          <button onclick="navigate('view-memories')" class="hover:text-rose-600">الذكريات</button>
+          <button onclick="navigate('view-notes')" class="hover:text-rose-600">رسائل الحب</button>
+          <button onclick="handleLogout()" class="text-gray-400 hover:text-gray-600">قفل</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- منطقة الصفحات / Content Area -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4">
+      
+      <!-- 1. الصفحة الرئيسية / HOME PAGE -->
+      <section id="view-home" class="page-view flex flex-col items-center justify-center py-12 text-center">
+        <h2 class="text-4xl font-extrabold text-rose-600 mb-4">مرحباً بك في عالمنا الخاص ✨</h2>
+        <p class="text-lg text-gray-600 max-w-md mb-8">
+          هنا مساحتنا الخاصة. يمكنك تصفح معرض الصور والذكريات، قراءة الرسائل، أو الاستماع إلى الموسيقى.
+        </p>
+        <div class="flex gap-4">
+          <button onclick="navigate('view-memories')" class="bg-rose-500 text-white px-6 py-3 rounded-xl shadow hover:bg-rose-600 transition">معرض الذكريات</button>
+          <button onclick="navigate('view-notes')" class="bg-rose-100 text-rose-700 px-6 py-3 rounded-xl hover:bg-rose-200 transition">قراءة الرسائل</button>
+        </div>
+      </section>
+
+      <!-- 2. معرض الذكريات / MEMORIES GALLERY -->
+      <section id="view-memories" class="page-view hidden">
+        <h2 class="text-2xl font-bold text-rose-700 mb-2">معرض الذكريات التفاعلي</h2>
+        <p class="text-sm text-gray-500 mb-4">يمكنك سحب وتحريك الصور والرموز في أي مكان داخل اللوحة!</p>
+        
+        <div id="canvas" class="relative w-full h-[500px] bg-white rounded-2xl border-2 border-dashed border-rose-200 overflow-hidden shadow-inner">
+          
+          <!-- صورة قابلة للسحب 1 -->
+          <div class="draggable absolute top-10 right-10 p-2 bg-white rounded-lg shadow-md border border-gray-100" style="width: 160px;">
+            <img src="https://picsum.photos/200/200?random=1" class="rounded pointer-events-none" alt="Memory">
+            <p class="text-xs text-center mt-2 text-gray-600 font-medium">لقاؤنا الأول ☕</p>
+          </div>
+
+          <!-- صورة قابلة للسحب 2 -->
+          <div class="draggable absolute top-20 right-60 p-2 bg-white rounded-lg shadow-md border border-gray-100" style="width: 160px;">
+            <img src="https://picsum.photos/200/200?random=2" class="rounded pointer-events-none" alt="Memory">
+            <p class="text-xs text-center mt-2 text-gray-600 font-medium">رحلة الشاطئ 🌊</p>
+          </div>
+
+          <!-- عناصر ملصقات قابلة للسحب -->
+          <div class="draggable absolute top-40 right-40 text-4xl select-none">🌹</div>
+          <div class="draggable absolute top-12 right-80 text-4xl select-none">💖</div>
+        </div>
+      </section>
+
+      <!-- 3. رسائل الحب / LOVE NOTES -->
+      <section id="view-notes" class="page-view hidden">
+        <h2 class="text-2xl font-bold text-rose-700 mb-6">رسائل خاصة</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white p-6 rounded-xl border border-rose-100 shadow-sm">
+            <span class="text-xs text-rose-400 font-semibold uppercase tracking-wider">رسالة #1</span>
+            <h3 class="text-lg font-bold text-gray-800 mt-1 mb-2">لماذا أحبك؟</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">شكراً لأنك تجعل كل يوم عادي يبدو وكأنه يوم مميز جداً.</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-rose-100 shadow-sm">
+            <span class="text-xs text-rose-400 font-semibold uppercase tracking-wider">رسالة #2</span>
+            <h3 class="text-lg font-bold text-gray-800 mt-1 mb-2">مغامرتنا القادمة</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">لا أستطيع الانتظار لرحلتنا القادمة معا في الشهر القادم!</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 4. مشغل الموسيقى / MUSIC PLAYER -->
+    <footer class="bg-white border-t border-rose-100 p-4 sticky bottom-0 shadow-lg">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <div class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-rose-500 font-bold">🎵</div>
+          <div>
+            <p id="track-title" class="text-sm font-semibold text-gray-800">موسيقى هادئة</p>
+            <p class="text-xs text-gray-400">خلفية موسيقية</p>
+          </div>
+        </div>
+        <audio id="audio-element" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        <button onclick="toggleAudio()" id="play-btn" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+          تشغيل
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ================= البرمجة / JAVASCRIPT ================= -->
+  <script>
+    // رمز المرور الافتراضي
+    const SECRET_PIN = "1234";
+
+    // إدارة الجلسة والدخول
+    function initSession() {
+      const isAuthenticated = sessionStorage.getItem("authenticated") === "true";
+      if (isAuthenticated) {
+        document.getElementById("view-lock").classList.add("hidden");
+        document.getElementById("app-container").classList.remove("hidden");
+        document.getElementById("app-container").classList.add("flex");
+      } else {
+        document.getElementById("view-lock").classList.remove("hidden");
+        document.getElementById("app-container").classList.add("hidden");
+      }
+    }
+
+    function handleLogin() {
+      const pinInput = document.getElementById("pin-input");
+      const lockCard = document.getElementById("lock-card");
+      const errorMsg = document.getElementById("lock-error");
+
+      if (pinInput.value === SECRET_PIN) {
+        sessionStorage.setItem("authenticated", "true");
+        errorMsg.classList.add("hidden");
+        pinInput.value = "";
+        initSession();
+      } else {
+        errorMsg.classList.remove("hidden");
+        lockCard.classList.add("animate-shake");
+        setTimeout(() => lockCard.classList.remove("animate-shake"), 400);
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem("authenticated");
+      initSession();
+    }
+
+    // التنقل بين الصفحات
+    function navigate(targetViewId) {
+      if (sessionStorage.getItem("authenticated") !== "true") {
+        initSession();
+        return;
+      }
+      document.querySelectorAll(".page-view").forEach(el => el.classList.add("hidden"));
+      document.getElementById(targetViewId).classList.remove("hidden");
+    }
+
+    // خاصية السحب والإفلات (Drag & Drop)
+    function setupDragAndDrop() {
+      let activeItem = null;
+      let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+      const draggables = document.querySelectorAll(".draggable");
+
+      draggables.forEach(item => {
+        item.style.transform = "translate3d(0px, 0px, 0)";
+        item.addEventListener("pointerdown", dragStart);
+      });
+
+      function dragStart(e) {
+        activeItem = e.currentTarget;
+        const transform = new WebKitCSSMatrix(window.getComputedStyle(activeItem).transform);
+        xOffset = transform.m41;
+        yOffset = transform.m42;
+
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+
+        document.addEventListener("pointermove", drag);
+        document.addEventListener("pointerup", dragEnd);
+      }
+
+      function drag(e) {
+        if (!activeItem) return;
+        e.preventDefault();
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+        activeItem.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+
+      function dragEnd() {
+        activeItem = null;
+        document.removeEventListener("pointermove", drag);
+        document.removeEventListener("pointerup", dragEnd);
+      }
+    }
+
+    // تشغيل وإيقاف الصوت
+    function toggleAudio() {
+      const audio = document.getElementById("audio-element");
+      const btn = document.getElementById("play-btn");
+
+      if (audio.paused) {
+        audio.play();
+        btn.textContent = "إيقاف مؤقت";
+        btn.classList.replace("bg-rose-500", "bg-gray-700");
+      } else {
+        audio.pause();
+        btn.textContent = "تشغيل";
+        btn.classList.replace("bg-gray-700", "bg-rose-500");
+      }
+    }
+
+    // تشغيل الوظائف عند فتح الصفحة
+    window.addEventListener("DOMContentLoaded", () => {
+      initSession();
+      setupDragAndDrop();
+    });
+  </script>
+</body>
+</html>
